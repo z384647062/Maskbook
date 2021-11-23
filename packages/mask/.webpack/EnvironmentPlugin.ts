@@ -1,4 +1,7 @@
-import { DefinePlugin, EnvironmentPlugin } from 'webpack'
+import { createRequire } from 'https://deno.land/std@0.115.1/node/module.ts'
+const require = createRequire(import.meta.url)
+const { DefinePlugin, EnvironmentPlugin } = require('webpack')
+
 export function EnvironmentPluginCache(def: Record<string, any>) {
     return new EnvironmentPlugin(def)
 }

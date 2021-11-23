@@ -1,5 +1,7 @@
-import emitFile from '@nice-labs/emit-file-webpack-plugin'
-import git from '@nice-labs/git-rev'
+import { createRequire } from 'https://deno.land/std@0.115.1/node/module.ts'
+const require = createRequire(import.meta.url)
+const { emitFile } = require('@nice-labs/emit-file-webpack-plugin')
+const git = require('@nice-labs/git-rev')
 
 export function emitGitInfo(reproducible: boolean) {
     return emitFile({

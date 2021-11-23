@@ -1,22 +1,29 @@
 /* spell-checker: disable */
-import { Configuration, ProvidePlugin, DefinePlugin, EnvironmentPlugin } from 'webpack'
+import type { Configuration } from 'webpack'
 import type { Configuration as DevServerConfiguration } from 'webpack-dev-server'
 
-import WebExtensionPlugin from 'webpack-target-webextension'
-import CopyPlugin from 'copy-webpack-plugin'
-import HTMLPlugin from 'html-webpack-plugin'
-import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
-import { ReadonlyCachePlugin } from './ReadonlyCachePlugin'
-import { EnvironmentPluginCache, EnvironmentPluginNoCache } from './EnvironmentPlugin'
-import { emitManifestFile } from './manifest'
-import { emitGitInfo, getGitInfo } from './git-info'
+import { ReadonlyCachePlugin } from './ReadonlyCachePlugin.ts'
+import { EnvironmentPluginCache, EnvironmentPluginNoCache } from './EnvironmentPlugin.ts'
+import { emitManifestFile } from './manifest.ts'
+import { emitGitInfo, getGitInfo } from './git-info.ts'
 
-import { isAbsolute, join } from 'path'
-import { readFileSync } from 'fs'
-import { nonNullable, EntryDescription, normalizeEntryDescription, joinEntryItem } from './utils'
-import { BuildFlags, normalizeBuildFlags, computedBuildFlags } from './flags'
+import { nonNullable, EntryDescription, normalizeEntryDescription, joinEntryItem } from './utils.ts'
+import { BuildFlags, normalizeBuildFlags, computedBuildFlags } from './flags.ts'
 
-import './clean-hmr'
+import './clean-hmr.ts'
+
+import { createRequire } from 'https://deno.land/std@0.115.1/node/module.ts'
+const require = createRequire(import.meta.url)
+const { ProvidePlugin, DefinePlugin, EnvironmentPlugin } = require('webpack')
+const WebExtensionPlugin = require('webpack-target-webextension')
+const CopyPlugin = require('copy-webpack-plugin')
+const HTMLPlugin = require('html-webpack-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const { isAbsolute, join } = require('path')
+const { readFileSync } = require('fs')
+const { fileURLToPath } = require('url')
+const __dirname = fileURLToPath(new URL('../.webpack', import.meta.url))
+const __filename = fileURLToPath(new URL(import.meta.url))
 
 export function createConfiguration(rawFlags: BuildFlags): Configuration {
     const normalizedFlags = normalizeBuildFlags(rawFlags)
@@ -113,14 +120,14 @@ export function createConfiguration(rawFlags: BuildFlags): Configuration {
             },
             rules: [
                 // Opt in source map
-                { test: /(async-call|webextension).+\.js$/, enforce: 'pre', use: ['source-map-loader'] },
+                // { test: /(async-call|webextension).+\.js$/, enforce: 'pre', use: ['source-map-loader'] },
                 // TypeScript
                 {
                     test: /\.tsx?$/,
                     parser: { worker: ['OnDemandWorker', '...'] },
                     // Compile all ts files in the workspace
                     include: join(__dirname, '../../'),
-                    loader: require.resolve('swc-loader'),
+                    loader: require.resolve('./swc-loader/cjs.js'),
                     options: {
                         // https://swc.rs/docs/configuring-swc/
                         jsc: {

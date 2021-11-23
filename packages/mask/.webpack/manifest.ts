@@ -1,7 +1,9 @@
 /* spell-checker: disable */
-import emitFile from '@nice-labs/emit-file-webpack-plugin'
-import { cloneDeep } from 'lodash-unified'
-import { NormalizedFlags } from './flags'
+import { createRequire } from 'https://deno.land/std@0.115.1/node/module.ts'
+const require = createRequire(import.meta.url)
+const { emitFile } = require('@nice-labs/emit-file-webpack-plugin')
+const { cloneDeep } = require('lodash-unified')
+import { NormalizedFlags } from './flags.ts'
 
 type Manifest = typeof import('../src/manifest.json') & Record<string, any>
 export function emitManifestFile(flags: NormalizedFlags) {
