@@ -1,4 +1,5 @@
 #!/usr/bin/env ts-node
+import '@masknet/polyfill/lockdown'
 import { spawn } from 'child_process'
 import { codegen } from '../codegen'
 import { awaitChildProcess } from '../utils'

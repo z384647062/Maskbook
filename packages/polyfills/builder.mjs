@@ -1,3 +1,4 @@
+import '@masknet/polyfill/lockdown'
 import { fileURLToPath } from 'url'
 import builder from 'core-js-builder'
 import { rollup } from 'rollup'

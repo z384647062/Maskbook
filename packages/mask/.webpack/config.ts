@@ -280,6 +280,7 @@ export function createConfiguration(rawFlags: BuildFlags): Configuration {
     for (const entry in entries) {
         withReactDevTools(entries[entry])
         with_iOSPatch(entries[entry])
+        withSES(entries[entry])
     }
 
     return baseConfig
@@ -295,6 +296,9 @@ export function createConfiguration(rawFlags: BuildFlags): Configuration {
         if (runtime.engine === 'safari' && runtime.architecture === 'app') {
             entry.import = joinEntryItem(entry.import, join(__dirname, '../src/polyfill/permissions.js'))
         }
+    }
+    function withSES(entry: EntryDescription) {
+        entry.import = joinEntryItem('@masknet/polyfill/lockdown', entry.import)
     }
 }
 function addHTMLEntry(options: HTMLPlugin.Options & { secp256k1?: boolean } = {}) {

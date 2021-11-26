@@ -20,6 +20,7 @@ importers:
       '@jest/globals': ^27.3.1
       '@magic-works/i18n-codegen': ^0.0.6
       '@masknet/cli': workspace:*
+      '@masknet/polyfill': workspace:^0.0.0
       '@masknet/serializer': workspace:^0.0.0
       '@mui/icons-material': 5.2.0
       '@mui/lab': 5.0.0-alpha.57
@@ -55,6 +56,7 @@ importers:
       react: '=18.0.0-alpha-00ced1e2b-20211102'
       react-dom: '=18.0.0-alpha-00ced1e2b-20211102'
       react-i18next: ^11.14.3
+      ses: ^0.15.1
       ts-jest: ^27.0.7
       ts-node: ^10.4.0
       ts-results: 3.3.0
@@ -68,6 +70,7 @@ importers:
       '@emotion/serialize': 1.0.2
       '@emotion/styled': 11.6.0_2b0a8467b48e43142ff002290fd3307d
       '@emotion/utils': 1.0.0
+      '@masknet/polyfill': link:packages/polyfills
       '@mui/icons-material': 5.2.0_dc46a52fe185f1a507ba5121c5153a94
       '@mui/lab': 5.0.0-alpha.57_f7d3da210109a864865f54afcfe7fcc7
       '@mui/material': 5.2.1_3a1736f0b251d91cb61e2dedb1200aa0
@@ -84,6 +87,7 @@ importers:
       react: 18.0.0-alpha-00ced1e2b-20211102
       react-dom: 18.0.0-alpha-00ced1e2b-20211102_c9c210d65bdac3c3f586a38a4275dd8c
       react-i18next: 11.14.3_013f2c14797ad16bc1ee7e59cd8fead8
+      ses: 0.15.1
       ts-results: 3.3.0
       web3-core: 1.5.2
       web3-core-method: 1.5.2
@@ -23271,6 +23275,10 @@ packages:
       express: 4.17.1
       request: 2.88.2
       xhr: 2.6.0
+    dev: false
+
+  /ses/0.15.1:
+    resolution: {integrity: sha512-eYQibWJ4/N/L591skY9XnVaaqOeYzbbkB9zPWVGKAjctaSUbIyTiYiTLqk08d3q8e/bNSBLS9jsypWYERK6mKQ==}
     dev: false
 
   /set-blocking/2.0.0:

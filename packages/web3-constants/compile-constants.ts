@@ -1,3 +1,4 @@
+import '@masknet/polyfill/lockdown'
 import { promises as fs } from 'fs'
 import path from 'path'
 import { run } from '../web3-contracts/utils'

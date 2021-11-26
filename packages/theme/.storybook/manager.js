@@ -1,3 +1,4 @@
+import '@masknet/polyfill/lockdown'
 import { addons } from '@storybook/addons'
 import { themes } from '@storybook/theming'
 

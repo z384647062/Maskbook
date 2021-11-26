@@ -1,3 +1,4 @@
+import '@masknet/polyfill/lockdown'
 import { createRequire } from 'module'
 import { CacheProvider } from '@emotion/react'
 import { IconPreview } from './previewer'

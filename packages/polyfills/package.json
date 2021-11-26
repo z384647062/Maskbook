@@ -21,5 +21,11 @@
     "core-js": "^3.19.1",
     "elliptic": "^6.5.4",
     "webcrypto-liner": "1.2.4"
+  },
+  "exports": {
+    "./lockdown": {
+      "import": "./ses/lockdown.mjs",
+      "require": "./ses/lockdown.cjs"
+    }
   }
 }

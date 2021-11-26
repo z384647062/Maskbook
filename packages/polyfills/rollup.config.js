@@ -1,3 +1,4 @@
+import '@masknet/polyfill/lockdown'
 import sucrase from '@rollup/plugin-sucrase'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
