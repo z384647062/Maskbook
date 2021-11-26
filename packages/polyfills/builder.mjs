@@ -1,4 +1,5 @@
-import '@masknet/polyfill/lockdown'
+// import '@masknet/polyfill/lockdown'
+// WAIT FOR https://github.com/endojs/endo/issues/943
 import { fileURLToPath } from 'url'
 import builder from 'core-js-builder'
 import { rollup } from 'rollup'
