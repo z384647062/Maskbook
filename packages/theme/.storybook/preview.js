@@ -1,4 +1,4 @@
-import '@masknet/polyfill/lockdown'
+// import '@masknet/polyfill/lockdown'
 import React, { useEffect, useState } from 'react'
 import { ThemeProvider, StyledEngineProvider, Box } from '@mui/material'
 import { MaskDarkTheme, MaskLightTheme, applyMaskColorVars } from '../src/index'

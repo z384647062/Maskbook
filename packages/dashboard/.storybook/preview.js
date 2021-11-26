@@ -1,4 +1,4 @@
-import '@masknet/polyfill/lockdown'
+// import '@masknet/polyfill/lockdown'
 import React from 'react'
 import { ThemeProvider, StyledEngineProvider } from '@mui/material'
 import { MaskLightTheme, applyMaskColorVars, CustomSnackbarProvider } from '@masknet/theme'

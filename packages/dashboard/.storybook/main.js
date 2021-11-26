@@ -1,4 +1,4 @@
-require('@masknet/polyfill/lockdown')
+// require('@masknet/polyfill/lockdown')
 const { ProvidePlugin } = require('webpack')
 module.exports = {
     stories: ['../stories/**/*.mdx', '../stories/**/*.@(js|jsx|ts|tsx)'],

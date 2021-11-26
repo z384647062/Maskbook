@@ -1,3 +1,3 @@
 /// <reference types="../../../node_modules/ses" />
 import 'ses'
-lockdown({ domainTaming: 'unsafe' })
+import './lockdown.run.js'

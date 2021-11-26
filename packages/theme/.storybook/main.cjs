@@ -1,4 +1,4 @@
-require('@masknet/polyfill/lockdown')
+// require('@masknet/polyfill/lockdown')
 module.exports = {
     stories: ['../stories/**/*.stories.mdx', '../stories/**/*.stories.@(js|jsx|ts|tsx)'],
     addons: [
