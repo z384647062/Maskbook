@@ -1,5 +1,16 @@
 {
     "inactive_project": "Inactive Project",
     "no_activity_time": "No activity time",
-    "attended": "attended"
+    "attended": "attended",
+    "address_name_ens": "ENS",
+    "address_name_uns": "UNS",
+    "address_name_dns": "DNS",
+    "address_name_rns": "RNS",
+    "address_name_address": "address",
+    "binding_rule1": "Twitter nickname is ENS.",
+    "binding_rule2": "Twitter bio contains ENS(e.g. vitalik.eth) or valid address.",
+    "binding_rule3": "Twitter ID + {{suffix}} is ENS.",
+    "binding_rule4": "Address used to sign the avatar.",
+    "binding_rules_title": "The NFT gallary will show NFTs as below rules:",
+    "current_display_of": "Current display of {{type}}: "
 }

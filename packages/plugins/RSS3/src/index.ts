@@ -1,5 +1,6 @@
 import { registerPlugin } from '@masknet/plugin-infra'
 import { base } from './base'
+import { languages } from './locales'
 
 registerPlugin({
     ...base,

@@ -1,4 +1,16 @@
 {
-    "name": "測試插件",
-    "__entry__": "🤔 測試"
+    "inactive_project": "",
+    "no_activity_time": "",
+    "attended": "",
+    "address_name_ens": "ENS",
+    "address_name_uns": "UNS",
+    "address_name_dns": "DNS",
+    "address_name_rns": "RNS",
+    "address_name_address": "address",
+    "binding_rule1": "",
+    "binding_rule2": "",
+    "binding_rule3": "",
+    "binding_rule4": "",
+    "binding_rules_title": "",
+    "current_display_of": ""
 }
