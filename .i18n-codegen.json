@@ -93,7 +93,7 @@
             "generator": {
                 "type": "i18next/react-hooks",
                 "hooks": "useI18N",
-                "namespace": "com.mask.rss3",
+                "namespace": "bio.rss3",
                 "trans": "Translate",
                 "sourceMap": "inline"
             }
