@@ -1,12 +1,54 @@
 import { first } from 'lodash-unified'
 import { defer } from '@masknet/shared-base'
-import type { ChainId, NetworkType, ProviderType } from '@masknet/web3-shared-evm'
-import * as MaskWallet from './providers/MaskWallet'
-import * as MetaMask from './providers/MetaMask'
+import { ChainId, createLookupTableResolver, ProviderType } from '@masknet/web3-shared-evm'
 import * as WalletConnect from './providers/WalletConnect'
-import * as CustomNetwork from './providers/CustomNetwork'
 import * as Injected from './providers/Injected'
-import * as Fortmatic from './providers/Fortmatic'
+import { CustomNetworkProvider } from './providers/CustomNetwork'
+import { FortmaticProvider } from './providers/Fortmatic'
+import type { Provider } from './types'
+import { currentChainIdSettings, currentProviderSettings } from '../../../plugins/Wallet/settings'
+
+const getProviderInternal = createLookupTableResolver<ProviderType, Provider | null>(
+    {
+        [ProviderType.MaskWallet]: null,
+        [ProviderType.MetaMask]: null,
+        [ProviderType.WalletConnect]: null,
+        [ProviderType.CustomNetwork]: new CustomNetworkProvider(),
+        [ProviderType.Coin98]: null,
+        [ProviderType.WalletLink]: null,
+        [ProviderType.MathWallet]: null,
+        [ProviderType.Fortmatic]: new FortmaticProvider(),
+    },
+    null,
+)
+
+export function createWeb3(
+    chainId = currentChainIdSettings.value,
+    providerType = currentProviderSettings.value,
+    keys: string[] = [],
+) {
+    const provider = getProviderInternal(providerType)
+    return provider?.createWeb3(chainId, keys) ?? null
+}
+
+export function createProvider(chainId = currentChainIdSettings.value, providerType = currentProviderSettings.value) {
+    const provider = getProviderInternal(providerType)
+    return provider?.createProvider(chainId)
+}
+
+export async function connect(chainId = currentChainIdSettings.value, providerType = currentProviderSettings.value) {
+    const provider = getProviderInternal(providerType)
+    const { accounts = [] } = (await provider?.requestAccounts(chainId)) ?? {}
+    return {
+        account: first(accounts),
+        chainId,
+    }
+}
+
+export async function disconnect(chainId = currentChainIdSettings.value, providerType = currentProviderSettings.value) {
+    const provider = getProviderInternal(providerType)
+    await provider?.dismissAccounts?.(chainId)
+}
 
 //#region connect WalletConnect
 // step 1:
@@ -50,60 +92,15 @@ export async function cancelWalletConnect() {
 }
 //#endregion
 
-export async function connectMaskWallet(networkType: NetworkType) {
-    const { accounts, chainId } = await MaskWallet.requestAccounts(networkType)
-    return {
-        account: first(accounts),
-        chainId,
-    }
-}
-
-export async function connectMetaMask() {
-    const { accounts, chainId } = await MetaMask.requestAccounts()
-    return {
-        account: first(accounts),
-        chainId,
-    }
-}
-
-//#region fortmatic
-export async function connectFortmatic(expectedChainId: ChainId) {
-    const { accounts, chainId } = await Fortmatic.requestAccounts(expectedChainId)
-    return {
-        account: first(accounts),
-        chainId,
-    }
-}
-
-export async function disconnectFortmatic(expectedChainId: ChainId) {
-    await Fortmatic.dismissAccounts(expectedChainId)
-}
-//#endregion
-
-export async function connectCustomNetwork() {
-    const { accounts, chainId } = await CustomNetwork.requestAccounts()
-    return {
-        account: first(accounts),
-        chainId,
-    }
-}
-
 //#region connect injected provider
-export async function connectInjected() {
-    const { accounts, chainId } = await Injected.requestAccounts()
-    return {
-        account: first(accounts),
-        chainId,
-    }
-}
-
-export async function notifyInjectedEvent(name: string, event: unknown, providerType: ProviderType) {
+export async function notifyEvent(providerType: ProviderType, name: string, event: unknown) {
+    const provider = getProviderInternal(providerType)
     switch (name) {
         case 'accountsChanged':
-            await Injected.onAccountsChanged(event as string[], providerType)
+            await provider?.onAccountsChanged?.(event as string[], providerType)
             break
         case 'chainChanged':
-            await Injected.onChainIdChanged(event as string, providerType)
+            await provider?.onChainIdChanged?.(event as string, providerType)
             break
         default:
             throw new Error(`Unknown event name: ${name}.`)

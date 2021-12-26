@@ -1,16 +1,20 @@
 import type Web3 from 'web3'
-import type { HttpProvider } from 'web3-core'
+import type { RequestArguments } from 'web3-core'
 import type { JsonRpcPayload, JsonRpcResponse } from 'web3-core-helpers'
 import type { ChainId, ProviderType } from '@masknet/web3-shared-evm'
 
 export interface Provider {
-    createProvider(): HttpProvider
-    createWeb3(): Web3
-    requestAccounts(): Promise<{
+    createProvider(chainId?: ChainId): Promise<{
+        request: (requestArguments: RequestArguments) => Promise<any>
+        send: (payload: JsonRpcPayload, callback: (error: Error | null, response?: JsonRpcResponse) => void) => void
+    }>
+    createWeb3(chainId?: ChainId, keys?: string[]): Promise<Web3>
+    requestAccounts(chainId?: ChainId): Promise<{
         chainId: ChainId
         accounts: string[]
     }>
-    ensureConnectedAndUnlocked: Promise<void>
+    dismissAccounts?(chainId?: ChainId): Promise<void>
+    ensureConnectedAndUnlocked?: Promise<void>
 
     onAccountsChanged?(accounts: string[], providerType: ProviderType): Promise<void>
     onChainIdChanged?(id: string, providerType: ProviderType): Promise<void>

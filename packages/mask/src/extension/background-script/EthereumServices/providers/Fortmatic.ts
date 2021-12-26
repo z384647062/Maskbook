@@ -5,6 +5,7 @@ import { defer } from '@masknet/shared-base'
 import { ChainId, EthereumMethodType } from '@masknet/web3-shared-evm'
 import { EVM_Messages } from '../../../../plugins/EVM/messages'
 import { resetAccount } from '../../../../plugins/Wallet/services'
+import type { Provider } from '../types'
 
 //#region redirect requests to the content page
 let id = 0
@@ -61,37 +62,34 @@ function send(payload: JsonRpcPayload, callback: (error: Error | null, response?
 
 let web3: Web3 | null = null
 
-export function createProvider() {
-    return {
-        request,
-        send,
-        sendAsync: send,
+export class FortmaticProvider implements Provider {
+    async createProvider() {
+        return {
+            request,
+            send,
+            sendAsync: send,
+        }
     }
-}
-
-export function createWeb3() {
-    if (web3) return web3
-    web3 = new Web3(createProvider())
-    return web3
-}
-
-export async function requestAccounts(expectedChainId: ChainId) {
-    const provider = createProvider()
-    const response = await provider.request({
-        method: EthereumMethodType.MASK_LOGIN_FORTMATIC,
-        params: [expectedChainId],
-    })
-    return response as {
-        chainId: ChainId
-        accounts: string[]
+    async createWeb3() {
+        if (web3) return web3
+        web3 = new Web3(await this.createProvider())
+        return web3
     }
-}
-
-export async function dismissAccounts(expectedChainId: ChainId) {
-    const provider = createProvider()
-    await provider.request({
-        method: EthereumMethodType.MASK_LOGOUT_FORTMATIC,
-        params: [expectedChainId],
-    })
-    resetAccount()
+    async requestAccounts(chainId?: ChainId) {
+        if (!chainId) throw new Error('Please give a chain id.')
+        const provider = await this.createProvider()
+        return provider.request({
+            method: EthereumMethodType.MASK_LOGIN_FORTMATIC,
+            params: [chainId],
+        })
+    }
+    async dismissAccounts(chainId?: ChainId) {
+        if (!chainId) throw new Error('Please give a chain id.')
+        const provider = await this.createProvider()
+        await provider.request({
+            method: EthereumMethodType.MASK_LOGOUT_FORTMATIC,
+            params: [chainId],
+        })
+        resetAccount()
+    }
 }

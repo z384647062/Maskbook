@@ -23,7 +23,7 @@ import * as Injected from './providers/Injected'
 import * as WalletConnect from './providers/WalletConnect'
 import * as Fortmatic from './providers/Fortmatic'
 import { getWallet } from '../../../plugins/Wallet/services'
-import { createWeb3 } from './web3'
+import { createWeb3, createProvider, connect, disconnect } from './provider'
 import { commitNonce, getNonce, resetNonce } from './nonce'
 import { getGasPrice } from './network'
 import { encodePayload, decodeResponse } from './interceptor'
@@ -206,15 +206,15 @@ export async function INTERNAL_send(
     const chainIdFinally = getPayloadChainId(payload) ?? chainId
     const wallet = providerType === ProviderType.MaskWallet ? await getWallet(account) : null
     const privKey = isSignableMethod(payload) && wallet ? await WalletRPC.exportPrivateKey(wallet.address) : undefined
-    const web3 = await createWeb3({
-        chainId: chainIdFinally,
-        privKeys: privKey ? [privKey] : [],
-        providerType: isReadOnlyMethod(payload) ? ProviderType.MaskWallet : providerType,
-    })
-    const provider = web3.currentProvider as HttpProvider | undefined
+    const web3 = await createWeb3(
+        chainIdFinally,
+        isReadOnlyMethod(payload) ? ProviderType.MaskWallet : providerType,
+        privKey ? [privKey] : [],
+    )
+    const provider = web3?.currentProvider as HttpProvider | undefined
 
     // unable to create provider
-    if (!provider) {
+    if (!web3 || !provider) {
         callback(new Error('Failed to create provider.'))
         return
     }
@@ -240,7 +240,7 @@ export async function INTERNAL_send(
         switch (providerType) {
             case ProviderType.MaskWallet:
                 try {
-                    const signed = await web3.eth.sign(data, address)
+                    const signed = await web3?.eth.sign(data, address)
                     callback(null, {
                         jsonrpc: '2.0',
                         id: payload.id as number,
@@ -292,7 +292,7 @@ export async function INTERNAL_send(
                     callback(null, {
                         jsonrpc: '2.0',
                         id: payload.id as number,
-                        result: await Fortmatic.createProvider().request({
+                        result: await provider?.request({
                             method: EthereumMethodType.PERSONAL_SIGN,
                             params: payload.params,
                         }),
@@ -358,8 +358,8 @@ export async function INTERNAL_send(
                 }
 
                 // send the signed transaction
-                const signed = await web3.eth.accounts.signTransaction(config, privKey)
-                if (!signed.rawTransaction) {
+                const signed = await web3?.eth.accounts.signTransaction(config, privKey)
+                if (!signed?.rawTransaction) {
                     callback(getError(null, null, EthereumErrorType.ERR_SIGN_TRANSACTION))
                     return
                 }
