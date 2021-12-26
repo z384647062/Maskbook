@@ -26,6 +26,7 @@ import { getWallet } from '../../../plugins/Wallet/services'
 import { createWeb3 } from './web3'
 import { commitNonce, getNonce, resetNonce } from './nonce'
 import { getGasPrice } from './network'
+import { encodePayload, decodeResponse } from './interceptor'
 import {
     currentAccountSettings,
     currentChainIdSettings,
@@ -224,6 +225,16 @@ export async function INTERNAL_send(
         return
     }
 
+    // send provider with interceptors
+    function sendToProvider(
+        rawPayload: JsonRpcPayload,
+        rawCallback: (error: Error | null, response?: JsonRpcResponse) => void,
+    ) {
+        provider?.send(encodePayload(chainId, rawPayload), (error, result) => {
+            rawCallback.apply(null, decodeResponse(chainId, error, result))
+        })
+    }
+
     async function personalSign() {
         const [data, address] = payload.params as [string, string]
         switch (providerType) {
@@ -353,7 +364,7 @@ export async function INTERNAL_send(
                     return
                 }
 
-                provider?.send(
+                sendToProvider(
                     {
                         ...payload,
                         method: EthereumMethodType.ETH_SEND_RAW_TRANSACTION,
@@ -382,7 +393,7 @@ export async function INTERNAL_send(
             case ProviderType.MetaMask:
                 try {
                     await MetaMask.ensureConnectedAndUnlocked()
-                    provider?.send(payload, (error, response) => {
+                    sendToProvider(payload, (error, response) => {
                         callback(
                             hasError(error, response)
                                 ? getError(error, response, EthereumErrorType.ERR_SEND_TRANSACTION)
@@ -472,7 +483,7 @@ export async function INTERNAL_send(
                 await sendTransaction()
                 break
             case EthereumMethodType.MASK_GET_TRANSACTION_RECEIPT:
-                provider.send(
+                sendToProvider(
                     {
                         ...payload,
                         method: EthereumMethodType.ETH_GET_TRANSACTION_RECEIPT,
