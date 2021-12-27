@@ -1,6 +1,6 @@
 import { identifier } from './constants'
 import { createPluginMessage, createPluginRPC } from '@masknet/plugin-infra'
-import { OnDemandWorker } from '../../../utils-pure'
+import { OnDemandWorker } from '@masknet/utils'
 import { AsyncCall, _AsyncVersionOf } from 'async-call-rpc'
 import { WorkerChannel } from 'async-call-rpc/utils/web/worker'
 

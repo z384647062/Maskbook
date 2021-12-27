@@ -13,6 +13,7 @@ packages:
   - 'packages/public-api'
   - 'packages/shared-base'
   - 'packages/shared'
+  - 'packages/utils'
   - 'packages/web3-kit'
   - 'packages/web3-providers'
   - 'packages/web3-constants'

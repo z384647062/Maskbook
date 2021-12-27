@@ -10,8 +10,10 @@ import {
     PostIVIdentifier,
     ProfileIdentifier,
 } from '@masknet/shared-base'
+import { restorePrototype } from '@masknet/utils'
 import { DBSchema, openDB } from 'idb/with-async-ittr'
-import { CryptoKeyToJsonWebKey, PrototypeLess, restorePrototype, restorePrototypeArray } from '../../../utils-pure'
+import { PrototypeLess, restorePrototypeArray } from '@masknet/utils'
+import { CryptoKeyToJsonWebKey } from '../../../utils-pure'
 import { createDBAccessWithAsyncUpgrade, createTransaction, IDBPSafeTransaction } from '../utils/openDB'
 
 type UpgradeKnowledge = { version: 4; data: Map<string, AESJsonWebKey> } | undefined
