@@ -14,6 +14,7 @@ import { toRaribleImage } from '../helpers'
 import { resolveRaribleUserNetwork } from '../pipes'
 import { currentChainIdSettings } from '../../Wallet/settings'
 import urlcat from 'urlcat'
+import { ChainId } from '@masknet/web3-shared-evm'
 
 async function fetchFromRarible<T>(root: string, subPath: string, config = {} as RequestInit) {
     const response = await (
@@ -55,6 +56,8 @@ export async function getNFTItem(tokenAddress: string, tokenId: string) {
 }
 
 export async function getOffersFromRarible(tokenAddress: string, tokenId: string) {
+    const chainId = currentChainIdSettings.value
+    if (chainId !== ChainId.Mainnet && chainId !== ChainId.Ropsten) return []
     const orders = await fetchFromRarible<RaribleOfferResponse[]>(
         RaribleMainnetURL,
         `items/${tokenAddress}:${tokenId}/offers`,
@@ -67,7 +70,6 @@ export async function getOffersFromRarible(tokenAddress: string, tokenId: string
         },
     )
     const profiles = await getProfilesFromRarible(orders.map((item) => item.maker))
-    const chainId = currentChainIdSettings.value
     return orders.map((order) => {
         const ownerInfo = profiles.find((owner) => owner.id === order.maker)
         return {
@@ -86,10 +88,11 @@ export async function getOffersFromRarible(tokenAddress: string, tokenId: string
 }
 
 export async function getListingsFromRarible(tokenAddress: string, tokenId: string) {
+    const chainId = currentChainIdSettings.value
+    if (chainId !== ChainId.Mainnet && chainId !== ChainId.Ropsten) return []
     const assets = await fetchFromRarible<Ownership[]>(RaribleMainnetURL, `items/${tokenAddress}:${tokenId}/ownerships`)
     const listings = assets.filter((x) => x.selling)
     const profiles = await getProfilesFromRarible(listings.map((x) => x.owner))
-    const chainId = currentChainIdSettings.value
     return listings.map((asset) => {
         const ownerInfo = profiles.find((owner) => owner.id === asset.owner)
         return {

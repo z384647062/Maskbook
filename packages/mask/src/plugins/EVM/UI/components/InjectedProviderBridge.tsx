@@ -20,7 +20,9 @@ export function InjectedProviderBridge(props: InjectedProviderBridgeProps) {
     const onMounted = useCallback(async () => {
         if (isDashboardPage() || isPopupPage()) return
         if (providerType !== ProviderType.Coin98) return
-        const connected = await Services.Ethereum.connectInjected()
+        const connected = await Services.Ethereum.connect({
+            providerType: ProviderType.Coin98,
+        })
         await WalletRPC.updateAccount({
             account: connected.account,
             chainId: connected.chainId,

@@ -94,7 +94,7 @@ export const currentNonFungibleAssetDataProviderSettings = createGlobalSettings<
     },
 )
 
-export const currentChainIdSettings = createGlobalSettings<number>(`${PLUGIN_IDENTIFIER}+chainId`, ChainId.Mainnet, {
+export const currentChainIdSettings = createGlobalSettings<ChainId>(`${PLUGIN_IDENTIFIER}+chainId`, ChainId.Mainnet, {
     primary: () => i18n.t('settings_choose_eth_network'),
     secondary: () => 'This only affects the built-in wallet.',
 })

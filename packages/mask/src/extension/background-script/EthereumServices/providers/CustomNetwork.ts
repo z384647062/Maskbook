@@ -1,31 +1,14 @@
+import type Web3 from 'web3'
 import { ChainId } from '@masknet/web3-shared-evm'
-import type types from 'web3'
-import type { RequestArguments } from 'web3-core'
-import type { JsonRpcPayload, JsonRpcResponse } from 'web3-core-helpers'
-import type { Provider } from '../types'
-
-export function createWeb3() {
-    throw new Error('To be implemented.')
-}
-
-export async function requestAccounts() {
-    return {
-        accounts: [],
-        chainId: ChainId.Mainnet,
-    }
-}
+import type { ExternalProvider, Provider } from '../types'
 
 export class CustomNetworkProvider implements Provider {
-    createProvider(): Promise<{
-        request: (requestArguments: RequestArguments) => Promise<any>
-        send: (payload: JsonRpcPayload, callback: (error: Error | null, response?: JsonRpcResponse) => void) => void
-    }> {
+    createProvider(): Promise<ExternalProvider> {
         throw new Error('Method not implemented.')
     }
-    createWeb3(): Promise<types> {
+    createWeb3(): Promise<Web3> {
         throw new Error('Method not implemented.')
     }
-    ensureConnectedAndUnlocked?: Promise<void> | undefined
     requestAccounts(): Promise<{ chainId: ChainId; accounts: string[] }> {
         return Promise.resolve({
             accounts: [],

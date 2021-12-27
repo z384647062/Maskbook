@@ -1,3 +1,4 @@
+import urlcat from 'urlcat'
 import { head, toString } from 'lodash-unified'
 import { OpenSeaPort } from 'opensea-js'
 import { ChainId } from '@masknet/web3-shared-evm'
@@ -5,7 +6,6 @@ import { request, requestSend } from '../../../extension/background-script/Ether
 import { resolveOpenSeaNetwork } from '../pipes'
 import { OpenSeaAPI_Key, OpenSeaBaseURL, OpenSeaRinkebyBaseURL, ReferrerAddress } from '../constants'
 import { currentChainIdSettings } from '../../Wallet/settings'
-import urlcat from 'urlcat'
 import type { OpenSeaAssetEvent, OpenSeaResponse } from '../types'
 
 function createExternalProvider() {
@@ -24,7 +24,8 @@ async function createOpenSeaPort(chainId?: ChainId) {
     return createOpenSeaPortChain(chainId ?? currentChainIdSettings.value)
 }
 
-async function createOpenSeaPortChain(chainId: ChainId.Mainnet | ChainId.Rinkeby) {
+async function createOpenSeaPortChain(chainId = currentChainIdSettings.value) {
+    if (chainId !== ChainId.Mainnet && chainId !== ChainId.Rinkeby) return
     return new OpenSeaPort(
         createExternalProvider(),
         {
@@ -42,7 +43,7 @@ async function createOpenSeaAPI(chainId: ChainId) {
 
 export async function getAssetFromSDK(tokenAddress: string, tokenId: string, chainId?: ChainId) {
     const _chainId = chainId ?? currentChainIdSettings.value
-    const sdkResponse = await (await createOpenSeaPort(_chainId)).api.getAsset({ tokenAddress, tokenId })
+    const sdkResponse = await (await createOpenSeaPort(_chainId))?.api.getAsset({ tokenAddress, tokenId })
     return sdkResponse
 }
 
@@ -90,18 +91,18 @@ export async function getEvents(asset_contract_address: string, token_id: string
 }
 
 export async function createBuyOrder(payload: Parameters<OpenSeaPort['createBuyOrder']>[0]) {
-    return (await createOpenSeaPort()).createBuyOrder({
+    return (await createOpenSeaPort())?.createBuyOrder({
         referrerAddress: ReferrerAddress,
         ...payload,
     })
 }
 
 export async function createSellOrder(payload: Parameters<OpenSeaPort['createSellOrder']>[0]) {
-    return (await createOpenSeaPort()).createSellOrder(payload)
+    return (await createOpenSeaPort())?.createSellOrder(payload)
 }
 
 export async function fulfillOrder(payload: Parameters<OpenSeaPort['fulfillOrder']>[0]) {
-    return (await createOpenSeaPort()).fulfillOrder({
+    return (await createOpenSeaPort())?.fulfillOrder({
         referrerAddress: ReferrerAddress,
         ...payload,
     })

@@ -9,16 +9,16 @@ import {
     ZERO_ADDRESS,
 } from '@masknet/web3-shared-evm'
 import * as ENS from '../apis/ens'
-import { createWeb3 } from '../../../extension/background-script/EthereumServices/web3'
 import { PluginProfileRPC } from '../../Profile/messages'
 import { PluginNFTAvatarRPC } from '../../Avatar/messages'
+import { createWeb3 } from '../../../extension/background-script/EthereumService'
 
 const ENS_RE = /\S{1,256}\.(eth|kred|xyz|luxe)\b/
 const ADDRESS_FULL = /0x\w+/
 const RSS3_URL_RE = /https?:\/\/(?<name>[\w.]+)\.rss3\.bio/
 const RSS3_RNS_RE = /(?<name>[\w.]+)\.rss3/
 
-function isValidAddress(address: string) {
+function isValidAddress(address?: string) {
     return address && EthereumAddress.isValid(address) && !isSameAddress(address, ZERO_ADDRESS)
 }
 
@@ -41,11 +41,8 @@ function getAddress(text: string) {
 }
 
 async function getResolvedENS(label: string) {
-    const web3 = await createWeb3({
-        chainId: ChainId.Mainnet,
-        providerType: ProviderType.MaskWallet,
-    })
-    return web3.eth.ens.getAddress(label)
+    const web3 = await createWeb3(ChainId.Mainnet, ProviderType.MaskWallet)
+    return web3?.eth.ens.getAddress(label)
 }
 
 async function getResolvedUNS(label: string) {
@@ -81,7 +78,7 @@ export async function getAddressNames(identity: {
         PluginNFTAvatarRPC.getAddress(twitterId ?? ''),
     ])
 
-    const getSettledAddress = (result: PromiseSettledResult<string>) => {
+    const getSettledAddress = (result: PromiseSettledResult<string | undefined>) => {
         return result.status === 'fulfilled' ? result.value : ''
     }
 
