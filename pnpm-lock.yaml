@@ -293,6 +293,7 @@ importers:
       '@masknet/plugin-example': workspace:*
       '@masknet/plugin-file-service': workspace:*
       '@masknet/plugin-flow': workspace:*
+      '@masknet/plugin-gitcoin': workspace:*
       '@masknet/plugin-infra': workspace:*
       '@masknet/plugin-rss3': workspace:*
       '@masknet/plugin-wallet': workspace:*
@@ -429,6 +430,7 @@ importers:
       '@masknet/plugin-example': link:../plugins/example
       '@masknet/plugin-file-service': link:../plugins/FileService
       '@masknet/plugin-flow': link:../plugins/Flow
+      '@masknet/plugin-gitcoin': link:../plugins/Gitcoin
       '@masknet/plugin-infra': link:../plugin-infra
       '@masknet/plugin-rss3': link:../plugins/RSS3
       '@masknet/plugin-wallet': link:../plugins/Wallet
@@ -691,6 +693,12 @@ importers:
       '@masknet/web3-shared-flow': link:../../web3-shared/flow
       bignumber.js: 9.0.2
       react-use: 17.3.1_757a802188413a36d4f24237d13b8e90
+
+  packages/plugins/Gitcoin:
+    specifiers:
+      '@masknet/plugin-infra': workspace:*
+    dependencies:
+      '@masknet/plugin-infra': link:../../plugin-infra
 
   packages/plugins/RSS3:
     specifiers:
