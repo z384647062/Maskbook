@@ -14,7 +14,7 @@ if (import.meta.webpackHot) {
     import.meta.webpackHot.accept(['./en-US.json', './zh-TW.json'], () =>
         globalThis.dispatchEvent?.(
             new CustomEvent('MASK_I18N_HMR', {
-                detail: ['money.juicebox', { en: en_US, zh: zh_TW }],
+                detail: ['co.gitcoin', { en: en_US, zh: zh_TW }],
             }),
         ),
     )
