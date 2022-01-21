@@ -98,7 +98,7 @@ function NFTAvatarInTwitter() {
         if (!avatar) {
             setNFTEvent(undefined)
             setAvatar(undefined)
-            window.alert('Sorry, failed to save NFT Avatar. Please set again.')
+            window.alert('Sorry, failed to save NFT Avatar. Please try again.')
             return
         }
 
