@@ -1,7 +1,49 @@
 import Web3 from 'web3'
 import type { RequestArguments } from 'web3-core'
 import type { JsonRpcPayload, JsonRpcResponse } from 'web3-core-helpers'
-import type { RequestOptions, SendOverrides } from '../types'
+import { ChainId, EthereumMethodType, RequestOptions, SendOverrides } from '../types'
+
+function createSquashRequest<T extends unknown>(
+    request: <T>(requestArguments: RequestArguments, overrides?: SendOverrides, options?: RequestOptions) => Promise<T>,
+) {
+    const cache = new Map<string, Promise<T>>()
+
+    /**
+     * If a cache id is returned for the requestArguments, it means the request can be cached.
+     * @param requestArguments
+     * @returns
+     */
+    function getCacheId(requestArguments: RequestArguments, overrides?: SendOverrides) {
+        const chainId = overrides?.chainId ?? ChainId.Mainnet
+        const { method, params } = requestArguments
+        switch (method) {
+            case EthereumMethodType.ETH_GET_BALANCE:
+                const [account, tag = 'latest'] = params as string[]
+                return [chainId, method, account, tag].join('_')
+            case EthereumMethodType.ETH_BLOCK_NUMBER:
+                return [chainId, method].join('_')
+            default:
+                return
+        }
+    }
+
+    return async (requestArguments: RequestArguments, overrides?: SendOverrides, options?: RequestOptions) => {
+        const id = getCacheId(requestArguments, overrides)
+
+        // the request can't be cached
+        if (!id) return request<T>(requestArguments, overrides, options)
+
+        // the request is already cached
+        if (cache.has(id)) return cache.get(id)
+
+        // the request can be cached but not fetched yet
+        const unresolved = request<T>(requestArguments, overrides, options).finally(() => {
+            cache.delete(id)
+        })
+        cache.set(id, unresolved)
+        return unresolved
+    }
+}
 
 export function createExternalProvider(
     request: <T extends unknown>(
